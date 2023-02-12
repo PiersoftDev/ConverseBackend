@@ -16,7 +16,7 @@ public class VendorKYCDO {
 
     private String gstNumber;
     private boolean gstVerified;
-    private String aadharNumber;
-    private boolean aadharVerified;
+    private String aadhaarNumber;
+    private boolean aadhaarVerified;
     private VendorBankDetailsDO bankDetailsDO;
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VendorBankDetails {
 
-    private String bankAccountNumber;
+    private String accountNumber;
     private String branch;
     private String ifscCode;
     private boolean isAccountVerified;

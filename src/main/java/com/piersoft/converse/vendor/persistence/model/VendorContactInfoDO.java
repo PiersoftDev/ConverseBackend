@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @DynamoDBDocument
 public class VendorContactInfoDO {
 
-    private String companyAddressLane1;
-    private String companyAddressLane2;
+    private String addressLine1;
+    private String addressLine2;
     private String city;
     private String state;
     private String postalCode;
     private String country;
-    private String companyEmail;
-    private boolean companyEmailVerified;
-    private String companyPhoneNo;
-    private boolean companyPhoneNoVerified;
+    private String email;
+    private boolean emailVerified;
+    private String phoneNo;
+    private boolean phoneNoVerified;
 }

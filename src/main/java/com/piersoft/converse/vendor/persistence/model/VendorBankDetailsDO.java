@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @DynamoDBDocument
 public class VendorBankDetailsDO {
 
-    private String bankAccountNumber;
+    private String accountNumber;
     private String branch;
     private String ifscCode;
     private boolean isAccountVerified;

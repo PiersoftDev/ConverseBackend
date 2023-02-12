@@ -28,7 +28,6 @@ public class VendorController {
     private VendorService vendorService;
 
     @PostMapping("/onboard")
-
     public ResponseEntity<Object> onboardVendorData(@RequestBody VendorOnboardRequestBody vendorOnboardRequestBody){
         String vendorDocId = vendorService.onboardVendor(vendorOnboardRequestBody);
         return ResponseEntity.ok().body(vendorDocId);

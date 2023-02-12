@@ -14,8 +14,8 @@ public class VendorKYC {
 
     private String gstNumber;
     private boolean gstVerified;
-    private String aadharNumber;
-    private boolean aadharVerified;
-    private VendorBankDetails vendorBankDetails;
+    private String aadhaarNumber;
+    private boolean aadhaarVerified;
+    private VendorBankDetails bankDetails;
 
 }
