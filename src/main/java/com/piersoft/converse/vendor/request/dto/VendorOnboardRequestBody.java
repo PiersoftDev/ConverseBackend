@@ -9,7 +9,7 @@ public class VendorOnboardRequestBody {
 
     private String docId;
     private String vendorId;
-    private VendorCompanyDetails vendorCompanyDetails;
+    private VendorCompanyDetails companyDetails;
     private VendorContactInformation vendorContactInformation;
     private VendorKYC vendorKYC;
 

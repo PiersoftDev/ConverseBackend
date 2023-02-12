@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VendorCompanyDetails {
 
-    private String companyName;
-    private String companyType;
-    private String companyProfile;
+    private String name;
+    private String type;
+    private String profile;
     private String service;
-    private String companyWebsiteUrl;
+    private String websiteURL;
 }

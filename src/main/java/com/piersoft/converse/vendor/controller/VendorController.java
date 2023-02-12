@@ -13,41 +13,40 @@ import lombok.CustomLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/converse/vendor")
+@RequestMapping(value = "/converse/v1/vendor")
 @Slf4j
+@CrossOrigin
 public class VendorController {
 
     @Autowired
     private VendorService vendorService;
 
-    @PostMapping("/onboard-vendor")
+    @PostMapping("/onboard")
+
     public ResponseEntity<Object> onboardVendorData(@RequestBody VendorOnboardRequestBody vendorOnboardRequestBody){
         String vendorDocId = vendorService.onboardVendor(vendorOnboardRequestBody);
         return ResponseEntity.ok().body(vendorDocId);
     }
 
-    @PostMapping("/onboard-vendor/updateVendorCompanyDetails")
+    @PostMapping("/updateVendorCompanyDetails")
     public ResponseEntity<Object> updateVendorCompanyDetails(@RequestBody VendorOnboardRequestBody vendorOnboardRequestBody){
         vendorService.updateCompanyDetails(vendorOnboardRequestBody);
         return ResponseEntity.ok().body("Successfully updated the company details");
     }
 
-    @PostMapping("/onboard-vendor/updateVendorContactInfo")
+    @PostMapping("/updateVendorContactInfo")
     public ResponseEntity<Object> updateVendorContactInfo(@RequestBody VendorOnboardRequestBody vendorOnboardRequestBody){
         vendorService.updateCompanyContactInfo(vendorOnboardRequestBody);
         return ResponseEntity.ok().body("Successfully updated the contact information");
     }
 
-    @PostMapping("/onboard-vendor/updateVendorKYC")
+    @PostMapping("/updateVendorKYC")
     public ResponseEntity<Object> updateVendorKYC(@RequestBody VendorOnboardRequestBody vendorOnboardRequestBody){
         vendorService.updateCompanyKYC(vendorOnboardRequestBody);
         return ResponseEntity.ok().body("Successfully updated the vendor KYC");
