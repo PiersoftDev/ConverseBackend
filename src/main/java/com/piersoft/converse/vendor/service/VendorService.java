@@ -11,4 +11,6 @@ public interface VendorService {
     void updateCompanyContactInfo(VendorOnboardRequestBody vendorOnboardRequestBody);
 
     void updateCompanyKYC(VendorOnboardRequestBody vendorOnboardRequestBody);
+
+    void fetchVendorDetails(String vendorId);
 }

@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface VendorRequestDOMapper {
     @Mapping(target="companyDetailsDO", source="requestBody.companyDetails")
-    @Mapping(target="contactInfoDO", source="requestBody.vendorContactInformation")
-    @Mapping(target="kycDO", source="requestBody.vendorKYC")
+    @Mapping(target="contactInfoDO", source="requestBody.contactInformation")
+    @Mapping(target="kycDO", source="requestBody.kyc")
     Vendor requestBodyToDO(VendorOnboardRequestBody requestBody);
 }

@@ -7,11 +7,11 @@ import lombok.Data;
 @Builder
 public class VendorOnboardRequestBody {
 
-    private String docId;
+    private String id;
     private String vendorId;
     private VendorCompanyDetails companyDetails;
-    private VendorContactInformation vendorContactInformation;
-    private VendorKYC vendorKYC;
+    private VendorContactInformation contactInformation;
+    private VendorKYC kyc;
 
 
 }

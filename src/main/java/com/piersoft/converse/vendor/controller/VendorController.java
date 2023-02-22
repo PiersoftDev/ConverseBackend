@@ -51,4 +51,8 @@ public class VendorController {
         return ResponseEntity.ok().body("Successfully updated the vendor KYC");
     }
 
+    @GetMapping("/{vendorId}")
+    public ResponseEntity<Object> getVendorDetails(@PathVariable String vendorId){
+        return null;
+    }
 }

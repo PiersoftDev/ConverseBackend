@@ -1,5 +1,6 @@
 package com.piersoft.converse.vendor.service.impl;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.piersoft.converse.vendor.mapper.VendorRequestDOMapper;
 import com.piersoft.converse.vendor.persistence.model.Vendor;
@@ -27,6 +28,9 @@ public class VendorServiceImpl implements VendorService {
     @Autowired
     private VendorRepository vendorRepository;
 
+    @Autowired
+    private AmazonDynamoDB amazonDynamoDB;
+
     @Override
     public String onboardVendor(VendorOnboardRequestBody vendorOnboardRequestBody) {
         Vendor vendor = vendorRequestDOMapper.requestBodyToDO(vendorOnboardRequestBody);
@@ -36,7 +40,7 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     public void updateCompanyDetails(VendorOnboardRequestBody vendorOnboardRequestBody) {
-        String docId = vendorOnboardRequestBody.getDocId();
+        String docId = vendorOnboardRequestBody.getId();
         if(StringUtils.isBlank(docId)){
             logger.error("Invalid document id, document id cannot be null or empty");
             throw new ResourceNotFoundException("Invalid document id, document id cannot be null or empty");
@@ -54,7 +58,7 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     public void updateCompanyContactInfo(VendorOnboardRequestBody vendorOnboardRequestBody) {
-        String docId = vendorOnboardRequestBody.getDocId();
+        String docId = vendorOnboardRequestBody.getId();
         if(StringUtils.isBlank(docId)){
             logger.error("Invalid document id, document id cannot be null or empty");
             throw new ResourceNotFoundException("Invalid document id, document id cannot be null or empty");
@@ -72,7 +76,7 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     public void updateCompanyKYC(VendorOnboardRequestBody vendorOnboardRequestBody) {
-        String docId = vendorOnboardRequestBody.getDocId();
+        String docId = vendorOnboardRequestBody.getId();
         if(StringUtils.isBlank(docId)){
             logger.error("Invalid document id, document id cannot be null or empty");
             throw new ResourceNotFoundException("Invalid document id, document id cannot be null or empty");
@@ -86,5 +90,10 @@ public class VendorServiceImpl implements VendorService {
         Vendor requestVendor = vendorRequestDOMapper.requestBodyToDO(vendorOnboardRequestBody);
         vendor.setKycDO(requestVendor.getKycDO());
         vendorRepository.save(vendor);
+    }
+
+    @Override
+    public void fetchVendorDetails(String vendorId) {
+        //amazonDynamoDB.getItem()
     }
 }
