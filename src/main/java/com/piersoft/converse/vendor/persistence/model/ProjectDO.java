@@ -27,5 +27,6 @@ public class ProjectDO {
     private String addressLine2;
     private String state;
     private String contactNumber;
-    private List<String> imageUrls;
+    private String headerImgUrl;
+    private List<String> siteImageUrls;
 }

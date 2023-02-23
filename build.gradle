@@ -35,6 +35,8 @@ dependencies {
 	implementation group: 'software.amazon.awssdk', name: 'textract', version: '2.20.8'
 	implementation group: 'software.amazon.awssdk', name: 'sagemaker', version: '2.20.8'
 	implementation group: 'software.amazon.awssdk', name: 'sagemakerruntime', version: '2.20.8'
+	implementation group: 'software.amazon.awssdk', name: 'cloudfront', version: '2.20.9'
+
 	implementation group: 'net.sourceforge.tess4j', name: 'tess4j', version: '5.6.0'
 
 
