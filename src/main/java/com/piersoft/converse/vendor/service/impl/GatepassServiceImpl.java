@@ -11,6 +11,8 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.cloudfront.CloudFrontUtilities;
 import software.amazon.awssdk.services.cloudfront.model.CustomSignerRequest;
 import software.amazon.awssdk.services.cloudfront.url.SignedUrl;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.*;
 import software.amazon.awssdk.services.rekognition.RekognitionClient;
 import software.amazon.awssdk.services.rekognition.model.*;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -25,7 +27,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,34 +48,76 @@ public class GatepassServiceImpl implements GatepassService {
     @Autowired
     private GatepassRepository gatepassRepository;
 
+    @Autowired
+    private DynamoDbClient dynamoDbClient;
+
     private static final String regex
             = "^[A-Z]{2}[\\ -]{0,1}[0-9]{2}[\\ -]{0,1}[A-Z]{1,2}[\\ -]{0,1}[0-9]{4}$";
 
 
     @Override
-    public GatepassDO createGatepass(String driverName, String driverPhoneNumber, String material, MultipartFile gatepassVehicleImg, MultipartFile purchaseOrderImg) throws Exception {
-        GatepassDO gatepassDO = GatepassDO.builder()
+    public GatepassDO createGatepass(String projectId, String driverName, String driverPhoneNumber, String material, MultipartFile gatepassVehicleImg, MultipartFile purchaseOrderImg) throws Exception {
+        GatepassDO gatepass = GatepassDO.builder()
+                .projectId(projectId)
                 .driverName(driverName)
                 .driverPhoneNumber(driverPhoneNumber)
                 .material(material)
-                .createdDateTime(LocalDateTime.now())
-                .lastUpdatedTIme(LocalDateTime.now())
+                .createdDateTime(ZonedDateTime.now(ZoneId.of( "Asia/Kolkata" )))
+                .lastUpdatedTime(ZonedDateTime.now(ZoneId.of( "Asia/Kolkata" )))
                 .status("Created")
                 .build();
 
         String vehicleNo = fetchVehicleNo(gatepassVehicleImg);
         uploadImageToS3("gatepass-vehicle-no-images",gatepassVehicleImg.getOriginalFilename(), gatepassVehicleImg );;
         SignedUrl signedUrl = getCloudFrontSignedUrl("dfkxr9rbpkopu.cloudfront.net", gatepassVehicleImg.getOriginalFilename() );
-        gatepassDO.setVehicleNo(vehicleNo);
-        gatepassDO.setVehicleImgUrl(signedUrl.url());
+        gatepass.setVehicleNo(vehicleNo);
+        gatepass.setVehicleImgUrl(signedUrl.url());
 
 
         String poNumber = fetchPurchaseOrderNo(purchaseOrderImg);
         uploadImageToS3("gatepass-po-images",purchaseOrderImg.getOriginalFilename(), purchaseOrderImg);
         SignedUrl poNumberSignedUrl = getCloudFrontSignedUrl("d20xz40a665hj1.cloudfront.net", purchaseOrderImg.getOriginalFilename() );
-        gatepassDO.setPoNumber(poNumber);
-        gatepassDO.setPoNumberImgUrl(poNumberSignedUrl.url());
-        return  gatepassRepository.save(gatepassDO);
+        gatepass.setPoNumber(poNumber);
+        gatepass.setPoNumberImgUrl(poNumberSignedUrl.url());
+        return  gatepassRepository.save(gatepass);
+    }
+
+    @Override
+    public List<GatepassDO> getAllGatepassForProject(String projectId) {
+        HashMap<String, AttributeValue> keyToGet = new HashMap<>();
+        keyToGet.put("projectId", AttributeValue.builder()
+                .s(projectId)
+                .build());
+
+        GetItemRequest request = GetItemRequest.builder()
+                .key(keyToGet)
+                .tableName("gatepass")
+                .build();
+        ScanRequest scanRequest = ScanRequest.builder().tableName("gatepass").build();
+        ScanResponse response = dynamoDbClient.scan(scanRequest);
+        List<GatepassDO> gatepassDOS = new ArrayList<>();
+        if(response != null && response.count() > 0){
+            List<Map<String,AttributeValue>> items =  response.items();
+            for(Map<String,AttributeValue> item : items){
+                GatepassDO gatepassDO = GatepassDO.builder()
+                        .projectId(item.get("projectId").s())
+                        .status(item.get("status").s())
+                        .material(item.get("material").s())
+                        .driverPhoneNumber(item.get("driverPhoneNumber").s())
+                        .driverName(item.get("driverName").s())
+                        .id(item.get("id").s())
+                        .lastUpdatedTime(ZonedDateTime.parse(item.get("lastUpdatedTime").s()))
+                        .createdDateTime(ZonedDateTime.parse(item.get("createdDateTime").s()))
+                        .poNumber(item.get("poNumber").s())
+                        .poNumberImgUrl(item.get("poNumberImgUrl").s())
+                        .vehicleNo(item.get("vehicleNo").s())
+                        .vehicleImgUrl(item.get("vehicleImgUrl").s())
+                        .build();
+                gatepassDOS.add(gatepassDO);
+            }
+            return gatepassDOS;
+        }
+        return null;
     }
 
     public String fetchVehicleNo(MultipartFile multipart) {
@@ -162,6 +208,8 @@ public class GatepassServiceImpl implements GatepassService {
         String cloudFrontUrl = new URL(protocol, distributionId, resourcePath).toString();
         // C:\piersoft\ConverseBackend\private_key.der
         ///home/ubuntu/private_key.der
+        // C:\piersoft\ConverseBackend\private_key.der
+        //Path path = Paths.get("/home/ubuntu/private_key.der");
         Path path = Paths.get("C:\\piersoft\\ConverseBackend\\private_key.der");
 
         CustomSignerRequest customSignerRequest = CustomSignerRequest.builder()

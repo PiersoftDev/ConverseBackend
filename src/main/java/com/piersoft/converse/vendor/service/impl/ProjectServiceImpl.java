@@ -32,9 +32,6 @@ public class ProjectServiceImpl implements ProjectService {
     private S3Client s3Client;
 
     @Autowired
-    private AmazonDynamoDB amazonDynamoDB;
-
-    @Autowired
     private ProjectRepository projectRepository;
 
     @Autowired

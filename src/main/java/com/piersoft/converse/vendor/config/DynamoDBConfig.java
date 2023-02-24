@@ -13,7 +13,7 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 @Configuration
 @EnableDynamoDBRepositories
@@ -33,6 +33,19 @@ public class DynamoDBConfig {
     public AWSCredentialsProvider amazonAWSCredentials() {
         return new AWSStaticCredentialsProvider(new BasicAWSCredentials(
                 "AKIARDJRCSMYCTBIRJWI", "ejDoYOtsfbbjwxIN7RZPIflUjJjYgzruGN7o6IGC"));
+    }
+
+    @Bean
+    public DynamoDbClient dynamoDbClient() {
+        return DynamoDbClient.builder()
+                .credentialsProvider(amazonAwsCredentials())
+                .region(Region.US_EAST_1)
+                .build();
+    }
+
+    public AwsCredentialsProvider amazonAwsCredentials() {
+        return StaticCredentialsProvider.create(AwsBasicCredentials.create(
+                "AKIARDJRCSMYOWNWIZ77", "s+Pzrx9je4hslssmrAyI8d544xvq7OMItm8RCpew"));
     }
 
 
