@@ -86,7 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
         String resourcePath = "/" +id+"/"+ originalFileName;
 
         String cloudFrontUrl = new URL(protocol, "d3cdac72dpvma6.cloudfront.net", resourcePath).toString();
-        Path path = Paths.get("C:\\piersoft\\ConverseBackend\\private_key.der");
+        Path path = Paths.get("/home/ubuntu/private_key.der");
 
         CustomSignerRequest customSignerRequest = CustomSignerRequest.builder()
                 .resourceUrl(cloudFrontUrl)
