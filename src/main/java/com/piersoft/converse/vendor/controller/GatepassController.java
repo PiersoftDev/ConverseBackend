@@ -26,8 +26,8 @@ public class GatepassController {
         return ResponseEntity.ok().body(gatepassService.createGatepass(projectId, driverName, driverPhoneNumber, material, gatepassVehicleImg, purchaseOrderImg));
     }
 
-    @GetMapping("/{projectId}")
-    public ResponseEntity<List<GatepassDO>> getGatepassForProject(@PathVariable("projectId") String projectId){
+    @PostMapping("/project")
+    public ResponseEntity<List<GatepassDO>> getGatepassForProject(@RequestParam("projectId") String projectId){
         return ResponseEntity.ok().body(gatepassService.getAllGatepassForProject(projectId));
     }
 }

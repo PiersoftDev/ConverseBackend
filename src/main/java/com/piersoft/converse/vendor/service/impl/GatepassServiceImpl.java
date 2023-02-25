@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,15 +85,6 @@ public class GatepassServiceImpl implements GatepassService {
 
     @Override
     public List<GatepassDO> getAllGatepassForProject(String projectId) {
-        HashMap<String, AttributeValue> keyToGet = new HashMap<>();
-        keyToGet.put("projectId", AttributeValue.builder()
-                .s(projectId)
-                .build());
-
-        GetItemRequest request = GetItemRequest.builder()
-                .key(keyToGet)
-                .tableName("gatepass")
-                .build();
         ScanRequest scanRequest = ScanRequest.builder().tableName("gatepass").build();
         ScanResponse response = dynamoDbClient.scan(scanRequest);
         List<GatepassDO> gatepassDOS = new ArrayList<>();
@@ -106,11 +98,11 @@ public class GatepassServiceImpl implements GatepassService {
                         .driverPhoneNumber(item.get("driverPhoneNumber").s())
                         .driverName(item.get("driverName").s())
                         .id(item.get("id").s())
-                        .lastUpdatedTime(ZonedDateTime.parse(item.get("lastUpdatedTime").s()))
-                        .createdDateTime(ZonedDateTime.parse(item.get("createdDateTime").s()))
-                        .poNumber(item.get("poNumber").s())
+                        .lastUpdatedTime(ZonedDateTime.parse(item.get("lastUpdatedTime").s(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                        .createdDateTime(ZonedDateTime.parse(item.get("createdDateTime").s(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                        .poNumber(item.containsKey("poNumber")? item.get("poNumber").s():"")
                         .poNumberImgUrl(item.get("poNumberImgUrl").s())
-                        .vehicleNo(item.get("vehicleNo").s())
+                        .vehicleNo(item.containsKey("vehicleNo")? item.get("vehicleNo").s():"")
                         .vehicleImgUrl(item.get("vehicleImgUrl").s())
                         .build();
                 gatepassDOS.add(gatepassDO);
@@ -209,8 +201,8 @@ public class GatepassServiceImpl implements GatepassService {
         // C:\piersoft\ConverseBackend\private_key.der
         ///home/ubuntu/private_key.der
         // C:\piersoft\ConverseBackend\private_key.der
-        //Path path = Paths.get("/home/ubuntu/private_key.der");
-        Path path = Paths.get("C:\\piersoft\\ConverseBackend\\private_key.der");
+        Path path = Paths.get("/home/ubuntu/private_key.der");
+        //Path path = Paths.get("C:\\piersoft\\ConverseBackend\\private_key.der");
 
         CustomSignerRequest customSignerRequest = CustomSignerRequest.builder()
                 .resourceUrl(cloudFrontUrl)
